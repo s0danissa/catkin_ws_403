@@ -23,3 +23,12 @@ III) Get the sine-wave response of (you can create a node that will send a sine-
 
 https://user-images.githubusercontent.com/52815976/135628921-3c76a758-85ec-49fc-86f1-319f04e6b99a.mp4
 
+## RQT sine wave and step response Screenshots
+### Sine-wave end-effector response graph
+![sine_e](sine_endj.png)
+### Sine-wave base joint response graph
+![sine_b](sine_basej.png)
+### Step end-effector response graph
+![step_e](step_endj.png)
+### Step base joint response graph
+![step_b](step_endj.png)
