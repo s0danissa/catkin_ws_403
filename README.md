@@ -35,6 +35,7 @@ https://user-images.githubusercontent.com/52815976/135628921-3c76a758-85ec-49fc-
 
 ## Lab Assignment 4
 **TASK I**: Configure MoveIt library - **moveit_403 folder**
+
 **Task II**: Create a node moves the “end” by 1.4 (in rviz units mm or m) along X axis - **/test_403/Lab4_2.cpp**
 
 
