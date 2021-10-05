@@ -53,5 +53,13 @@ https://user-images.githubusercontent.com/52815976/135878198-f426c2a7-21f1-4123-
 
 https://user-images.githubusercontent.com/52815976/135878211-0779c5a1-81a3-4501-9c37-ae0b2237def7.mp4
 
+## Lab Assignment 5
+**TASK I**: Aquire data from the joint angles during a rectangle trajectory execution using RosBag and plot them in MatLAB:
 
+![joint_angles](joint_angles_plot.png)
 
+**TASK I**: Write a script to reate a node for publishing data of the end-effector's X,Y positions during a rectangle trajectory execution using RosBag and plot them in MatLAB(test_403/publish_js.cpp):
+
+![end_effector_XY](end_effector_plot_XY.png)
+
+![end_effector_tr](end_effector_trajectory.png)
