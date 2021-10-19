@@ -431,7 +431,7 @@ plt.show()
 ![png](output_29_0.png)
 
 
-**Therefore, the number of layers I'm going to use further is 4 layers**
+**The last value before the instability begins is 4 layers. Therefore, the number of layers I'm going to use further is 4 layers**
 
 ## 5. Testing different optimizers
 a) "Adam"
