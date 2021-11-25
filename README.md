@@ -553,3 +553,330 @@ Data-set of 5000 observations <br>
 Loss function: MSLE - Mean Squared Logarithmic Error<br>
 Number of layers: 6<br>
 Numberof nodes in each layer: 70<br>
+
+## Lab Assignment 7 - Jupyter Notebook report - IK (Improved performance results at the end)
+Importing required libraries
+```python
+import numpy as np 
+import keras
+from keras.models import Sequential
+from keras.layers import Dense, Flatten, Dropout
+from keras.optimizers import Adam
+from keras.utils import np_utils 
+from keras import backend as K 
+import pandas as pd
+from sklearn.model_selection import train_test_split
+```
+
+
+```python
+data = pd.read_csv("dict1.csv", header = None, names = ["Angles", "XY"])
+old_data = pd.read_csv("dict.csv", header = None, names = ["Angles", "XY"])
+old_data.head(10)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Angles</th>
+      <th>XY</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>(0.3514, -0.2365, -0.1968, -0.1949, -0.0863)</td>
+      <td>[ 3.3793 -1.2376  0.25  ]</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>(0.3094, 0.4925, 0.4629, -0.1565, 0.3523)</td>
+      <td>[2.061  2.5772 0.25  ]</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>(0.1157, -0.4121, 0.0578, 0.3772, 0.428)</td>
+      <td>[3.4905 0.9227 0.25  ]</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>(0.339, -0.1037, -0.2424, 0.2975, 0.0062)</td>
+      <td>[ 3.6355 -0.1753  0.25  ]</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>(0.2312, -0.4059, -0.0095, 0.4335, 0.4635)</td>
+      <td>[3.4413 0.9989 0.25  ]</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>(-0.4137, 0.2597, 0.4613, -0.3463, -0.0408)</td>
+      <td>[3.4743 0.8149 0.25  ]</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>(0.4124, 0.2546, -0.2049, -0.0035, 0.2845)</td>
+      <td>[3.3598 1.3618 0.25  ]</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>(0.273, -0.0413, -0.2412, 0.2292, -0.4313)</td>
+      <td>[ 3.2972 -1.5038  0.25  ]</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>(-0.4171, -0.0979, -0.3272, -0.2378, 0.1323)</td>
+      <td>[ 3.3774 -0.8196  0.25  ]</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>(-0.165, 0.3236, -0.2667, -0.0649, -0.0461)</td>
+      <td>[3.663  0.0381 0.25  ]</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+data.head(10)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Angles</th>
+      <th>XY</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>(-0.40510000000000002, -0.097100000000000006, ...</td>
+      <td>[ 3.5048  0.9169  0.25  ]</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>(-0.19320000000000001, 0.1341, -0.264699999999...</td>
+      <td>[ 3.6347  0.3976  0.25  ]</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>(0.192, 0.155, -0.28570000000000001, -0.393199...</td>
+      <td>[ 3.1567 -1.6357  0.25  ]</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>(0.24679999999999999, -0.18140000000000001, 0....</td>
+      <td>[ 3.2989 -1.5492  0.25  ]</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>(-0.35449999999999998, 0.3926, 0.1613, 0.07829...</td>
+      <td>[ 3.6155 -0.2022  0.25  ]</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>(0.31819999999999998, -0.22770000000000001, -0...</td>
+      <td>[ 3.6511 -0.3356  0.25  ]</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>(0.4531, 0.085400000000000004, 0.4546, 0.09879...</td>
+      <td>[ 3.4324  0.4782  0.25  ]</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>(0.1404, -0.065500000000000003, -0.08409999999...</td>
+      <td>[ 3.6861  0.241   0.25  ]</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>(0.34379999999999999, 0.27279999999999999, -0....</td>
+      <td>[ 3.1972 -1.6062  0.25  ]</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>(0.21460000000000001, -0.1293, -0.040399999999...</td>
+      <td>[ 3.6256  0.3925  0.25  ]</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+old_train = old_data['Angles'].to_numpy()
+old_labels = old_data['XY'].to_numpy()
+```
+
+
+
+
+    str
+
+
+
+
+```python
+X = list()
+Y = list()
+for i in range(len(train)):
+    labels[i] = labels[i].replace('   ', ' ')
+    labels[i] = labels[i].replace('  ', ' ')
+    labels[i] = labels[i].strip('[ ').strip(' ]')
+    train[i] = train[i].strip('(').strip(')')
+    result = [float(val) for val in train[i].split(',')]
+    X.append(result)
+    result = [float(val) for val in labels[i].split(' ')]
+    Y.append(result)
+```
+
+
+```python
+X_train, X_test, y_train, y_test = train_test_split(np.asarray(X), np.asarray(Y), test_size=0.80)
+```
+
+
+```python
+print(np.shape(X_train))
+print(np.shape(y_train))
+print(np.shape(X_test))
+print(np.shape(y_test))
+```
+
+    (1000, 5)
+    (1000, 3)
+    (4001, 5)
+    (4001, 3)
+
+
+
+```python
+y_train = np.delete(y_train, 2, 1)
+y_test = np.delete(y_test, 2, 1)
+```
+
+
+```python
+def rmse(y_true, y_pred):
+    return K.sqrt(K.mean(K.square(y_pred - y_true)))
+
+model = Sequential()
+model.add(Dense(10, input_dim =5, activation = 'relu'))
+model.add(Dense(16, activation = 'relu'))
+model.add(Dense(2, activation='linear'))
+model.compile(loss=rmse, optimizer=Adam(0.01))
+```
+
+
+```python
+model.summary()
+```
+
+    _________________________________________________________________
+    Layer (type)                 Output Shape              Param #   
+    =================================================================
+    dense_10 (Dense)             (None, 10)                60        
+    _________________________________________________________________
+    dense_11 (Dense)             (None, 16)                176       
+    _________________________________________________________________
+    dense_12 (Dense)             (None, 2)                 34        
+    =================================================================
+    Total params: 270
+    Trainable params: 270
+    Non-trainable params: 0
+    _________________________________________________________________
+
+
+
+```python
+model.fit(X_train, y_train, epochs = 10)
+```
+
+    Epoch 1/10
+    1000/1000 [==============================] - 0s 17us/step - loss: 1.7388
+    Epoch 2/10
+    1000/1000 [==============================] - 0s 19us/step - loss: 0.5257
+    Epoch 3/10
+    1000/1000 [==============================] - 0s 21us/step - loss: 0.2330
+    Epoch 4/10
+    1000/1000 [==============================] - 0s 19us/step - loss: 0.1371
+    Epoch 5/10
+    1000/1000 [==============================] - 0s 21us/step - loss: 0.0910
+    Epoch 6/10
+    1000/1000 [==============================] - 0s 21us/step - loss: 0.0921
+    Epoch 7/10
+    1000/1000 [==============================] - 0s 17us/step - loss: 0.0685
+    Epoch 8/10
+    1000/1000 [==============================] - 0s 25us/step - loss: 0.0636
+    Epoch 9/10
+    1000/1000 [==============================] - 0s 19us/step - loss: 0.0694
+    Epoch 10/10
+    1000/1000 [==============================] - 0s 22us/step - loss: 0.0675
+
+
+
+
+
+    <keras.callbacks.History at 0x7f363a747b90>
+
+
+
+
+```python
+scores = model.evaluate(X_test, y_test, verbose=0) 
+print("RMSE: %.2f" % (scores))
+```
+
+    RMSE: 0.07
+
+
+
+```python
+print(model.predict(X_train[10].reshape(1,5)))
+print(y_train[10])
+```
+
+    [[ 3.5522912 -0.731135 ]]
+    [ 3.5195 -0.7121]
